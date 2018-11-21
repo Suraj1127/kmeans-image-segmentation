@@ -1,12 +1,13 @@
+#!/usr/bin/env python3
 """
 Author: Suraj Regmi
 Date: 21st November, 2018
-Description: Implementation of naive KNN algorithm to do simple image segmentation.
+Description: Implementation of naive KMeans algorithm to do simple image segmentation.
 ________________________________________________________________________________________________________________________
 
 Note:
-This might not be the best approach to do image segmentation. We have just explored KNN for image segmentation and nothing
-more. This is not intended for production purpose however exploration of KNN for image segmentation is encouraged.
+This might not be the best approach to do image segmentation. We have just explored K-means algorithm for image segmentation and nothing
+more. This is not intended for production purpose however exploration of K-means clustering for image segmentation is encouraged.
 """
 
 from PIL import Image
@@ -14,7 +15,7 @@ from PIL import Image
 import numpy as np
 
 
-class KNN:
+class KMeans:
 
     def __init__(self, no_of_centroids, data):
         """
@@ -51,6 +52,7 @@ class KNN:
 
         if len(set(tuple(i) for i in self.centroids['values'])) != self.k:
             self.set_random_centroids()
+
 
     def get_best_label(self, i, j):
         """
@@ -108,44 +110,11 @@ class KNN:
 
     def fit(self):
         """
-        Fit the KNN model to the data given.
+        Fit the Kmeans model to the data given.
         """
-        self.set_random_centroids()
 
-        for i in range(10):
+        for _ in range(3):
             self.classify_data_points()
-            self.generate_masked_data_points()
-            self.display_masked_data_points(i)
             stop_tuning = self.tune_centroids()
             if stop_tuning:
                 break
-
-def preprocess_image(filename):
-    """
-    Preprocess image and return the image array(Numpy array).
-    :param filename: path of file
-    :return: numpy array of the image
-    """
-    image = Image.open(filename)
-    image = image.resize((200, 200))
-    image.show()
-    return np.asarray(image)
-
-
-def main():
-    # get the numpy array of the image
-    image_array = preprocess_image('images/sample_image_3.png')
-
-    # take just three channels
-    image_array = image_array[:, :, 0:3]
-
-    # construct the knn model
-    knn = KNN(2, image_array)
-
-    # fit the model and visualize
-    knn.fit()
-
-
-
-if __name__ == "__main__":
-    main()
